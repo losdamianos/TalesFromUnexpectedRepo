@@ -1,0 +1,57 @@
+﻿@page "/"
+@inject HttpClient Http
+
+<div class="grid-center">
+
+</div>
+
+<div class="grid-btn">
+    <button type="button" 
+            class="btn btn-link btn-lg fixed-button"
+            onclick="@GetJokeAsync">
+        <img id="chuck" 
+             class="center glow @((_isLoading ? "shaking" : ""))"
+             alt="Chuck Norris" 
+             src="https://i.imgur.com/NiSr76R.png" 
+             width="900" />
+    </button>
+</div>
+
+<div class="grid-joke">
+    <div class="alert alert-danger" role="alert">
+        @if (_isLoading)
+        {
+            <h1 class="hg-font">...</h1>
+        }
+        else
+        {
+            <h1 class="hg-font">@_rhyssQuote</h1>
+        }
+    </div>
+</div>
+
+
+@functions {
+    bool _isLoading = false;
+    string _disabled => _isLoading ? "disabled" : null;
+    string[] rhysQuotes;
+
+    protected override async Task OnInitAsync()
+    {
+        rhysQuotes = Quotes.RhysQuotes;
+        await Task.Delay(200);
+    }
+
+    string _rhyssQuote = "Click on Welsh Wizard to get little fact about him";
+
+    private async Task GetJokeAsync()
+    {
+        _isLoading = true;
+
+        _rhyssQuote = rhysQuotes.ToList().PickRandom();
+
+        await Task.Delay(200);
+
+        _isLoading = false;
+    }
+}
